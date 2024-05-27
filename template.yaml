@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: test
+
+Resources:
+  TestLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: TestLambda
+      CodeUri: src
+      Handler: app.lambdaHandler
+      Runtime: nodejs20.x
+      Timeout: 5
+      Events:
+        FifoQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt FifoQueue.Arn
+            BatchSize: 2
+
+  FifoQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      ContentBasedDeduplication: true
+      DelaySeconds: 0
+      FifoQueue: true
+      QueueName: FifoQueue.fifo
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt FifoDLQueue.Arn
+        maxReceiveCount: 1
+      VisibilityTimeout: 30
+    DependsOn: FifoDLQueue
+  FifoDLQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      ContentBasedDeduplication: false
+      FifoQueue: true
+      QueueName: FifoDLQueue.fifo
+      VisibilityTimeout: 30

@@ -1,0 +1,23 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = ""
+resolve_s3 = 
+s3_prefix = ""
+region = "ap-northeast-1"
+profile = ""
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+
+[dev]
+[dev.deploy]
+[dev.deploy.parameters]
+stack_name = ""
+s3_bucket = ""
+s3_prefix = ""
+profile = ""
+region = "ap-northeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []
